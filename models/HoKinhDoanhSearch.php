@@ -89,9 +89,9 @@ class HoKinhDoanhSearch extends HoKinhDoanh {
                 ->andFilterWhere(['like', 'upper(noisong_hientai)', mb_strtoupper($this->noisong_hientai)])
                 ->andFilterWhere(['like', 'upper(so_nha)', mb_strtoupper($this->so_nha)])
                 ->andFilterWhere(['like', 'upper(ten_duong)', mb_strtoupper($this->ten_duong)])
-                ->andFilterWhere(['like', 'upper(ten_phuong)', mb_strtoupper($this->ten_phuong)])
+                ->andFilterWhere(['=', 'upper(ten_phuong)', mb_strtoupper($this->ten_phuong)])
                 ->andFilterWhere(['like', 'upper(vi_tri)', mb_strtoupper($this->vi_tri)])
-                ->andFilterWhere(['like', 'upper(giayphep_so)', mb_strtoupper($this->giayphep_so)])
+                ->andFilterWhere(['=', 'upper(giayphep_so)', mb_strtoupper($this->giayphep_so)])
                 ->andFilterWhere(['like', 'upper(ghi_chu)', mb_strtoupper($this->ghi_chu)]);
         if ($this->tu_ngay != null && $this->den_ngay != null) {
             $query->andWhere("giayphep_ngay between '" . date('Y-m-d', strtotime(str_replace('/', '-', $this->tu_ngay))) . "' and '" . date('Y-m-d', strtotime(str_replace('/', '-', $this->den_ngay))) . "'");

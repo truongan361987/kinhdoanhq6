@@ -13,8 +13,6 @@ use yii\web\View;
 /* @var $searchModel HoKinhDoanhSearch */
 /* @var $dataProvider ActiveDataProvider */
 
-$this->title = 'Ho Kinh Doanhs';
-$this->params['breadcrumbs'][] = $this->title;
 
 CrudAsset::register($this);
 ?>
