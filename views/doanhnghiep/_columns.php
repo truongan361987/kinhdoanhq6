@@ -1,5 +1,6 @@
 <?php
 
+use app\models\DmLoaihinhdn;
 use app\models\RanhPhuong;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -32,13 +33,24 @@ return [
             ],
             [
                 'class' => '\kartik\grid\DataColumn',
+                'width' => '10%',
+                'attribute' => 'loaihinhdn_id',
+                'label' => 'Loại hình DN',
+                'format' => 'html',
+                'value' => function($model) {
+                    return $model->ten_loai;
+                },
+                'filter' => ArrayHelper::map(DmLoaihinhdn::find()->all(), 'id_loaihinhdn', 'ten_loai')
+            ],
+            [
+                'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'so_nha',
             ],
             [
                 'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'ten_duong',
             ],
-           [
+            [
                 'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'ten_phuong',
                 'format' => 'html',
@@ -55,7 +67,6 @@ return [
                 'class' => '\kartik\grid\DataColumn',
                 'attribute' => 'dien_thoai',
             ],
-          
 //    [
 //        'class'=>'\kartik\grid\DataColumn',
 //        'attribute'=>'fax',
@@ -92,17 +103,17 @@ return [
             // 'class'=>'\kartik\grid\DataColumn',
             // 'attribute'=>'quoc_tich',
             // ],
-            // [
-            // 'class'=>'\kartik\grid\DataColumn',
-            // 'attribute'=>'cmnd',
-            // ],
-            // [
-            // 'class'=>'\kartik\grid\DataColumn',
-            // 'attribute'=>'ngay_cap',
-            // ],
-            // [
-            // 'class'=>'\kartik\grid\DataColumn',
-            // 'attribute'=>'noi_cap',
+            [
+                'class' => '\kartik\grid\DataColumn',
+                'attribute' => 'so_cmnd',
+            ],
+//             [
+//             'class'=>'\kartik\grid\DataColumn',
+//             'attribute'=>'ngaycap_cmnd',
+//             ],
+//             [
+//             'class'=>'\kartik\grid\DataColumn',
+//             'attribute'=>'noicap_cmnd',
             // ],
             // [
             // 'class'=>'\kartik\grid\DataColumn',
@@ -119,11 +130,11 @@ return [
             // [
             // 'class'=>'\kartik\grid\DataColumn',
             // 'attribute'=>'ghi_chu',
-            // ],
-            // [
-            // 'class'=>'\kartik\grid\DataColumn',
-            // 'attribute'=>'tinh_trang',
-            // ],
+            //            ],
+            [
+                'class' => '\kartik\grid\DataColumn',
+                'attribute' => 'tinhtrang_hd',
+            ],
             // [
             // 'class'=>'\kartik\grid\DataColumn',
             // 'attribute'=>'geom',

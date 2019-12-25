@@ -82,6 +82,11 @@ use app\services\UtilityService;
                         <span class="title">Tìm kiếm</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?= Yii::$app->urlManager->createUrl('doanhnghiep/readexcel') ?>" class="nav-link ">
+                        <span class="title">Import excel</span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nav-item  ">

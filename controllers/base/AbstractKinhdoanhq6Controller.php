@@ -32,7 +32,7 @@ class AbstractKinhdoanhq6Controller extends Controller
                             ////hokinhdoanh-bando
                             'hokinhdoanh-geojson','list-hokinhdoanh','hokinhdoanh-get','hokinhdoanh-incircle','poidetail-incircle','timkiem',
                             ///doanhnghiep-bando
-                            'doanhnghiep-geojson','list-doanhnghiep','doanhnghiep-get',
+                            'doanhnghiep-geojson','list-doanhnghiep','doanhnghiep-get','readexcel',
                             ///cuahang-bando
                             'cuahang-geojson','list-cuahang','cuahang-get',
                             ///quanlyhkd

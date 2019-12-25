@@ -49,7 +49,7 @@
         MapConfig: {
             mapId: "map",
             defaultCenter: [10.748065544599127, 106.63519442081451],
-            defaultZoom: 13,
+            defaultZoom: 11,
             defaultConfig: {maxZoom: 22},
             baseLayers: ["Bản đồ Google", "HCMGIS", "Ảnh vệ tinh", "MapBox"],
             overLayers: ["RanhThua","Cơ quan nhà nước", "Cơ sở giáo dục", "Cơ sở y tế", "Cơ sở tôn giáo", "Chợ", "Di tích lịch sử", "Trụ sở công an"],

@@ -23,6 +23,11 @@ use Yii;
  * @property string $ghi_chu
  * @property integer $doanhnghiep_id
  * @property string $ma_dn
+ * @property string $tinhtrang_hd
+ * @property string $dia_chi
+ * @property string $nganhnghe_chinh
+ * @property string $so_laodong
+ * @property string $email
  */
 class ChiNhanh extends \yii\db\ActiveRecord
 {
@@ -42,7 +47,7 @@ class ChiNhanh extends \yii\db\ActiveRecord
         return [
             [['loaihinhdn_id', 'doanhnghiep_id'], 'integer'],
             [['ngay_cap', 'ngay_thaydoi'], 'safe'],
-            [['geom', 'ghi_chu'], 'string'],
+            [['geom', 'ghi_chu', 'tinhtrang_hd', 'dia_chi', 'nganhnghe_chinh', 'so_laodong', 'email'], 'string'],
             [['ten_dn', 'nganh_kd'], 'string', 'max' => 300],
             [['so_nha', 'ten_duong', 'ten_phuong', 'dien_thoai', 'nguoi_daidien', 'ma_nganh'], 'string', 'max' => 100],
             [['ma_dn'], 'string', 'max' => 50],
@@ -56,7 +61,7 @@ class ChiNhanh extends \yii\db\ActiveRecord
     {
         return [
             'id_chinhanh' => 'Id Chinhanh',
-            'ten_dn' => 'Tên chi nhánh',
+            'ten_dn' => 'Tên doanh nghiệp',
             'loaihinhdn_id' => 'Loaihinhdn ID',
             'so_nha' => 'Số nhà',
             'ten_duong' => 'Tên đường',
@@ -71,6 +76,11 @@ class ChiNhanh extends \yii\db\ActiveRecord
             'ghi_chu' => 'Ghi chú',
             'doanhnghiep_id' => 'Doanhnghiep ID',
             'ma_dn' => 'Mã DN',
+            'tinhtrang_hd' => 'Tình trạng',
+            'dia_chi' => 'Địa chỉ',
+            'nganhnghe_chinh' => 'Ngành nghề chính',
+            'so_laodong' => 'Số lao động',
+            'email' => 'Email',
         ];
     }
 }

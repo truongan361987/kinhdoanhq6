@@ -71,6 +71,7 @@ use yii\widgets\DetailView;
                                         ],
                                         'ten_loai',
                                         'ma_nganh',
+                                        'nganhnghe_chinh',
                                         'ma_dn',
                                         [
                                             'attribute' => 'ngay_cap',
@@ -94,6 +95,9 @@ use yii\widgets\DetailView;
                                             'value' => ($model['doanhnghiep']->von_dieule == null) ? '(Chưa có)' : $model['doanhnghiep']->von_dieule,
                                         ],
                                         'nguoi_daidien',
+                                        'thanh_vien',
+                                        'co_dong',
+                                        'tinhtrang_hd',
                                     ],
                                 ])
                                 ?>

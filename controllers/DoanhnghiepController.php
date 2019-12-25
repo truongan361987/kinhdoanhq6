@@ -2,18 +2,25 @@
 
 namespace app\controllers;
 
+use app\models\ChiNhanh;
 use app\models\DmLoaihinhdn;
 use app\models\DmManganh;
 use app\models\DoanhNghiep;
 use app\models\DoanhNghiepSearch;
+use app\models\FileUpload;
 use app\models\GiaoThong;
 use app\models\RanhPhuong;
 use app\models\VDoanhnghiep;
+use app\services\DebugService;
 use app\services\UtilityService;
+use Box\Spout\Common\Type;
+use Box\Spout\Reader\ReaderFactory;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
+use function mb_strtoupper;
 
 /**
  * DoanhnghiepController implements the CRUD actions for DoanhNghiep model.
@@ -256,6 +263,251 @@ class DoanhnghiepController extends Controller {
         }
 
         return $out;
+    }
+
+    public function actionReadexcel() {
+        $searchModel = new DoanhNghiepSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model = new FileUpload();
+        $countUp = 0;
+        $countIn = 0;
+        if (\Yii::$app->request->isPost) {
+            //    date_default_timezone_set('Asia/Ho_chi_minh');
+            $model->file = UploadedFile::getInstance($model, 'file');
+            $model->uploadFile();
+            $inputFileName = \Yii::$app->basePath . '/uploads/file/import/' . $model->file->baseName . '.' . $model->file->extension;
+            $reader = ReaderFactory::create(Type::XLSX); // for XLSX files
+            $reader->setShouldFormatDates(true);
+            $reader->open($inputFileName);
+            $transaction = Yii::$app->db->beginTransaction();
+            foreach ($reader->getSheetIterator() as $sheet) {
+                if ($sheet->getName() == 'Tong') {
+                     DebugService::dumpdie($sheet);
+                    // work with sheet I want
+                    foreach ($sheet->getRowIterator() as $i => $row) {
+                        if ($i >= 2) {
+                            try {
+                                $doanhnghiep = DoanhNghiep::findOne(['upper(ma_dn)' => strval(mb_strtoupper($row[1]))]);
+                                 
+                                if ($doanhnghiep != NULL) {
+                                     DebugService::dumpdie($row);
+                                    $countUp++;
+                                    $doanhnghiep->ten_dn = $row[1];
+                                    $doanhnghiep->dia_chi = $row[2];
+                                    $doanhnghiep->von_dieule = $row[3];
+                                    $doanhnghiep->tinhtrang_hd = $row[4];
+                                    $doanhnghiep->dien_thoai = $row[5];
+                                    $doanhnghiep->email = $row[6];
+                                    $doanhnghiep->nguoi_daidien = $row[7];
+                                    if ($row[8] != "") {
+                                        $doanhnghiep->ngay_sinh = date('Y-m-d', strtotime($row[8]));
+                                    }
+                                    $doanhnghiep->so_cmnd = $row[9];
+                                    if ($row[10] != "") {
+                                        $doanhnghiep->ngaycap_cmnd = date('Y-m-d', strtotime($row[10]));
+                                    }
+                                    $doanhnghiep->noicap_cmnd = $row[11];
+                                    $doanhnghiep->nganhnghe_chinh = $row[12];
+                                    if ($row[13] != "") {
+                                        $doanhnghiep->ngay_cap = date('Y-m-d', strtotime($row[13]));
+                                    }
+                                    if ($row[14] != "") {
+                                        $doanhnghiep->ngay_thaydoi = date('Y-m-d', strtotime($row[14]));
+                                    }
+                                    $doanhnghiep->so_laodong = $row[15];
+                                    $doanhnghiep->thanh_vien = $row[16];
+                                    $doanhnghiep->co_dong = $row[17];
+                                    $doanhnghiep->save();
+                                } elseif ($doanhnghiep == NULL) {
+                                    $countIn++;
+                                    $doanhnghiep = new DoanhNghiep();
+                                    $doanhnghiep->ma_dn = $row[0];
+                                    $doanhnghiep->ten_dn = $row[1];
+                                    $doanhnghiep->dia_chi = $row[2];
+                                    $doanhnghiep->von_dieule = $row[3];
+                                    $doanhnghiep->tinhtrang_hd = $row[4];
+                                    $doanhnghiep->dien_thoai = $row[5];
+                                    $doanhnghiep->email = $row[6];
+                                    $doanhnghiep->nguoi_daidien = $row[7];
+                                    if ($row[8] != "") {
+                                        $doanhnghiep->ngay_sinh = date('Y-m-d', strtotime($row[8]));
+                                    }
+                                    $doanhnghiep->so_cmnd = $row[9];
+                                    if ($row[10] != "") {
+                                        $doanhnghiep->ngaycap_cmnd = date('Y-m-d', strtotime($row[10]));
+                                    }
+                                    $doanhnghiep->noicap_cmnd = $row[11];
+                                    $doanhnghiep->nganhnghe_chinh = $row[12];
+                                    if ($row[13] != "") {
+                                        $doanhnghiep->ngay_cap = date('Y-m-d', strtotime($row[13]));
+                                    }
+                                    if ($row[14] != "") {
+                                        $doanhnghiep->ngay_thaydoi = date('Y-m-d', strtotime($row[14]));
+                                    }
+                                    if ($row[15] == 'Chi nhánh') {
+                                        $doanhnghiep->loaihinhdn_id = 1;
+                                    } elseif ($row[15] == 'Công ty cổ phần') {
+                                        $doanhnghiep->loaihinhdn_id = 4;
+                                    } elseif ($row[15] == 'Công ty trách nhiệm hữu hạn hai thành viên trở lên') {
+                                        $doanhnghiep->loaihinhdn_id = 3;
+                                    } elseif ($row[15] == 'Công ty trách nhiệm hữu hạn một thành viên') {
+                                        $doanhnghiep->loaihinhdn_id = 2;
+                                    } elseif ($row[15] == 'Địa điểm kinh doanh') {
+                                        $doanhnghiep->loaihinhdn_id = 6;
+                                    } elseif ($row[15] == 'Doanh nghiệp tư nhân') {
+                                        $doanhnghiep->loaihinhdn_id = 5;
+                                    } elseif ($row[15] == 'Văn phòng đại diện') {
+                                        $doanhnghiep->loaihinhdn_id = 7;
+                                    }
+                                    $doanhnghiep->so_laodong = $row[16];
+                                    $doanhnghiep->thanh_vien = $row[17];
+                                    $doanhnghiep->co_dong = $row[18];
+
+                                    $doanhnghiep->save();
+                                }
+                            } catch (Exception $e) {
+                                DebugService::dumpdie('Lỗi dòng số: ' . $i);
+                                $transaction->rollBack();
+                            }
+                        }
+                    }
+                    $reader->close();
+                    UtilityService::alert('dn_import_success');
+                    $transaction->commit();
+                    return $this->render('readexcel', [
+                                'model' => $model, 'countUp' => $countUp,
+                                'countIn' => $countIn,
+                                'searchModel' => $searchModel,
+                                'dataProvider' => $dataProvider,
+                    ]);
+                }
+            }
+        }
+        return $this->render('readexcel', [
+                    'model' => $model, 'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionImportChinhanh() {
+        $searchModel = new DoanhNghiepSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $model = new FileUpload();
+        $countUp = 0;
+        $countIn = 0;
+        if (\Yii::$app->request->isPost) {
+            //    date_default_timezone_set('Asia/Ho_chi_minh');
+            $model->file = UploadedFile::getInstance($model, 'file');
+            $model->uploadFile();
+            $inputFileName = \Yii::$app->basePath . '/uploads/file/import/' . $model->file->baseName . '.' . $model->file->extension;
+            $reader = ReaderFactory::create(Type::XLSX); // for XLSX files
+            $reader->setShouldFormatDates(true);
+            $reader->open($inputFileName);
+            $transaction = Yii::$app->db->beginTransaction();
+            foreach ($reader->getSheetIterator() as $sheet) {
+                if ($sheet->getName() == 'Sheet1') {
+                    // work with sheet I want
+                    foreach ($sheet->getRowIterator() as $i => $row) {
+                        if ($i >= 2) {
+                            try {
+                                $doanhnghiep = ChiNhanh::findOne(['upper(ma_dn)' => strval(mb_strtoupper($row[0]))]);
+                                //  DebugService::dumpdie($row[17]);
+                                if ($doanhnghiep != NULL) {
+                                    $countUp++;
+                                    $doanhnghiep->ten_dn = $row[1];
+                                    $doanhnghiep->dia_chi = $row[2];
+                                   // $doanhnghiep->von_dieule = $row[3];
+                                    $doanhnghiep->tinhtrang_hd = $row[4];
+                                    $doanhnghiep->dien_thoai = $row[5];
+                                    $doanhnghiep->email = $row[6];
+                                    $doanhnghiep->nguoi_daidien = $row[7];
+//                                    if ($row[8] != "") {
+//                                        $doanhnghiep->ngay_sinh = date('Y-m-d', strtotime($row[8]));
+//                                    }
+//                                    $doanhnghiep->so_cmnd = $row[9];
+//                                    if ($row[10] != "") {
+//                                        $doanhnghiep->ngaycap_cmnd = date('Y-m-d', strtotime($row[10]));
+//                                    }
+//                                    $doanhnghiep->noicap_cmnd = $row[11];
+                                    $doanhnghiep->nganhnghe_chinh = $row[12];
+                                    if ($row[13] != "") {
+                                        $doanhnghiep->ngay_cap = date('Y-m-d', strtotime($row[13]));
+                                    }
+                                    if ($row[14] != "") {
+                                        $doanhnghiep->ngay_thaydoi = date('Y-m-d', strtotime($row[14]));
+                                    }
+                                    $doanhnghiep->so_laodong = $row[15];
+                                 //   $doanhnghiep->thanh_vien = $row[16];
+                                 //   $doanhnghiep->co_dong = $row[17];
+                                    $doanhnghiep->save();
+                                } elseif ($doanhnghiep == NULL) {
+                                    $countIn++;
+                                    $doanhnghiep = new DoanhNghiep();
+                                    $doanhnghiep->ten_dn = $row[1];
+                                    $doanhnghiep->dia_chi = $row[2];
+                                  //  $doanhnghiep->von_dieule = $row[3];
+                                    $doanhnghiep->tinhtrang_hd = $row[4];
+                                    $doanhnghiep->dien_thoai = $row[5];
+                                    $doanhnghiep->email = $row[6];
+                                    $doanhnghiep->nguoi_daidien = $row[7];
+//                                    if ($row[8] != "") {
+//                                        $doanhnghiep->ngay_sinh = date('Y-m-d', strtotime($row[8]));
+//                                    }
+//                                    $doanhnghiep->so_cmnd = $row[9];
+//                                    if ($row[10] != "") {
+//                                        $doanhnghiep->ngaycap_cmnd = date('Y-m-d', strtotime($row[10]));
+//                                    }
+                                 //   $doanhnghiep->noicap_cmnd = $row[11];
+                                    $doanhnghiep->nganhnghe_chinh = $row[12];
+                                    if ($row[13] != "") {
+                                        $doanhnghiep->ngay_cap = date('Y-m-d', strtotime($row[13]));
+                                    }
+                                    if ($row[14] != "") {
+                                        $doanhnghiep->ngay_thaydoi = date('Y-m-d', strtotime($row[14]));
+                                    }
+                                    if ($row[15] == 'Chi nhánh') {
+                                        $doanhnghiep->loaihinhdn_id = 1;
+                                    } elseif ($row[15] == 'Công ty cổ phần') {
+                                        $doanhnghiep->loaihinhdn_id = 4;
+                                    } elseif ($row[15] == 'Công ty trách nhiệm hữu hạn hai thành viên trở lên') {
+                                        $doanhnghiep->loaihinhdn_id = 3;
+                                    } elseif ($row[15] == 'Công ty trách nhiệm hữu hạn một thành viên') {
+                                        $doanhnghiep->loaihinhdn_id = 2;
+                                    } elseif ($row[15] == 'Địa điểm kinh doanh') {
+                                        $doanhnghiep->loaihinhdn_id = 6;
+                                    } elseif ($row[15] == 'Doanh nghiệp tư nhân') {
+                                        $doanhnghiep->loaihinhdn_id = 5;
+                                    } elseif ($row[15] == 'Văn phòng đại diện') {
+                                        $doanhnghiep->loaihinhdn_id = 7;
+                                    }
+                                    $doanhnghiep->so_laodong = $row[16];
+                                   // $doanhnghiep->thanh_vien = $row[17];
+                                  //  $doanhnghiep->co_dong = $row[18];
+
+                                    $doanhnghiep->save();
+                                }
+                            } catch (Exception $e) {
+                                DebugService::dumpdie('Lỗi dòng số: ' . $i);
+                                $transaction->rollBack();
+                            }
+                        }
+                    }
+                    $reader->close();
+                    UtilityService::alert('dn_import_success');
+                    $transaction->commit();
+                    return $this->render('readexcel', [
+                                'model' => $model, 'countUp' => $countUp,
+                                'countIn' => $countIn,
+                                'searchModel' => $searchModel,
+                                'dataProvider' => $dataProvider,
+                    ]);
+                }
+            }
+        }
+        return $this->render('readexcel', [
+                    'model' => $model, 'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
     }
 
 }

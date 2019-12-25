@@ -118,7 +118,7 @@
         MapConfig: {
             mapId: "map",
             defaultCenter: [10.7480929, 106.63523620000001],
-            defaultZoom: 13,
+            defaultZoom: 11,
             defaultConfig: {maxZoom: 22},
             baseLayers: ["Bản đồ Google", "HCMGIS", "Ảnh vệ tinh", "MapBox"],
             overLayers: ["RanhThua"],

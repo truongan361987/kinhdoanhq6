@@ -24,6 +24,16 @@ use Yii;
  * @property string $ma_nganh
  * @property string $ghi_chu
  * @property string $ma_dn
+ * @property string $tinhtrang_hd
+ * @property string $so_cmnd
+ * @property string $ngaycap_cmnd
+ * @property string $noicap_cmnd
+ * @property string $email
+ * @property string $thanh_vien
+ * @property string $co_dong
+ * @property string $dia_chi
+ * @property string $ngay_sinh
+ * @property string $nganhnghe_chinh
  */
 class DoanhNghiep extends \yii\db\ActiveRecord
 {
@@ -43,8 +53,8 @@ class DoanhNghiep extends \yii\db\ActiveRecord
         return [
             [['loaihinhdn_id'], 'integer'],
             [['von_dieule'], 'match', 'pattern'=>'/^([0-9.,])+$/'],
-            [['ngay_cap', 'ngay_thaydoi'], 'safe'],
-            [['geom', 'ghi_chu'], 'string'],
+            [['ngay_cap', 'ngay_thaydoi', 'ngaycap_cmnd', 'ngay_sinh'], 'safe'],
+            [['geom', 'ghi_chu', 'tinhtrang_hd', 'so_cmnd', 'noicap_cmnd', 'email', 'thanh_vien', 'co_dong', 'dia_chi', 'nganhnghe_chinh'], 'string'],
             [['ten_dn', 'nganh_kd'], 'string', 'max' => 300],
             [['so_nha', 'ten_duong', 'ten_phuong', 'dien_thoai', 'nguoi_daidien', 'so_laodong', 'ma_nganh'], 'string', 'max' => 100],
             [['ma_dn'], 'string', 'max' => 50],
@@ -74,6 +84,16 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             'ma_nganh' => 'Mã ngành',
             'ghi_chu' => 'Ghi chú',
             'ma_dn' => 'Mã doanh nghiệp',
+            'tinhtrang_hd' => 'Tình trạng',
+            'so_cmnd' => 'CMND',
+            'ngaycap_cmnd' => 'Ngày cấp',
+            'noicap_cmnd' => 'Nơi cấp',
+            'email' => 'Email',
+            'thanh_vien' => 'Thành viên',
+            'co_dong' => 'Cổ đông',
+            'dia_chi' => 'Địa chỉ',
+            'ngay_sinh' => 'Ngày sinh',
+            'nganhnghe_chinh' => 'Ngành nghề chính',
         ];
     }
       public function beforeValidate() {
