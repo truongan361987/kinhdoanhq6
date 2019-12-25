@@ -19,7 +19,6 @@ use Yii;
  * @property string $nganh_kd
  * @property string $ngay_cap
  * @property string $ngay_thaydoi
- * @property string $so_laodong
  * @property string $geom
  * @property string $ma_nganh
  * @property string $ghi_chu
@@ -29,43 +28,40 @@ use Yii;
  * @property string $ngaycap_cmnd
  * @property string $noicap_cmnd
  * @property string $email
- * @property string $thanh_vien
- * @property string $co_dong
  * @property string $dia_chi
  * @property string $ngay_sinh
  * @property string $nganhnghe_chinh
+ * @property string $chu_so_huu
+ * @property string $thanh_vien
+ * @property string $co_dong
+ * @property string $so_laodong
  */
-class DoanhNghiep extends \yii\db\ActiveRecord
-{
+class DoanhNghiep extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'doanh_nghiep';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
+            [['ten_dn', 'so_nha', 'ten_duong', 'ten_phuong', 'dien_thoai', 'nguoi_daidien', 'nganh_kd', 'geom', 'ghi_chu', 'ma_dn', 'tinhtrang_hd', 'so_cmnd', 'noicap_cmnd', 'email', 'dia_chi', 'nganhnghe_chinh', 'chu_so_huu', 'thanh_vien', 'co_dong'], 'string'],
             [['loaihinhdn_id'], 'integer'],
-            [['von_dieule'], 'match', 'pattern'=>'/^([0-9.,])+$/'],
+            [['von_dieule', 'so_laodong'], 'match', 'pattern' => '/^([0-9.,])+$/'],
             [['ngay_cap', 'ngay_thaydoi', 'ngaycap_cmnd', 'ngay_sinh'], 'safe'],
-            [['geom', 'ghi_chu', 'tinhtrang_hd', 'so_cmnd', 'noicap_cmnd', 'email', 'thanh_vien', 'co_dong', 'dia_chi', 'nganhnghe_chinh'], 'string'],
-            [['ten_dn', 'nganh_kd'], 'string', 'max' => 300],
-            [['so_nha', 'ten_duong', 'ten_phuong', 'dien_thoai', 'nguoi_daidien', 'so_laodong', 'ma_nganh'], 'string', 'max' => 100],
-            [['ma_dn'], 'string', 'max' => 50],
+            [['ma_nganh'], 'string', 'max' => 100],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id_doanhnghiep' => 'Id Doanhnghiep',
             'ten_dn' => 'Tên doanh nghiệp',
@@ -79,7 +75,6 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             'nganh_kd' => 'Ngành nghề KD',
             'ngay_cap' => 'Ngày cấp',
             'ngay_thaydoi' => 'Ngày thay đổi',
-            'so_laodong' => 'So Laodong',
             'geom' => 'Geom',
             'ma_nganh' => 'Mã ngành',
             'ghi_chu' => 'Ghi chú',
@@ -89,15 +84,18 @@ class DoanhNghiep extends \yii\db\ActiveRecord
             'ngaycap_cmnd' => 'Ngày cấp',
             'noicap_cmnd' => 'Nơi cấp',
             'email' => 'Email',
-            'thanh_vien' => 'Thành viên',
-            'co_dong' => 'Cổ đông',
             'dia_chi' => 'Địa chỉ',
             'ngay_sinh' => 'Ngày sinh',
             'nganhnghe_chinh' => 'Ngành nghề chính',
+            'chu_so_huu' => 'Chủ sở hữu',
+            'thanh_vien' => 'Thành viên',
+            'co_dong' => 'Cổ đông',
+            'so_laodong' => 'Tổng số lao động',
         ];
     }
-      public function beforeValidate() {
+  public function beforeValidate() {
         $this->von_dieule = str_replace(",", ".", $this->von_dieule);
+        $this->so_laodong = str_replace(",", ".", $this->so_laodong);
         return true;
     }
 }

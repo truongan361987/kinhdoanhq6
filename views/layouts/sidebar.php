@@ -89,7 +89,7 @@ use app\services\UtilityService;
                 </li>
             </ul>
         </li>
-        <li class="nav-item  ">
+<!--        <li class="nav-item  ">
             <a href="javascript:;" class="nav-link nav-toggle">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="title">Chi nhánh công ty </span>
@@ -107,7 +107,7 @@ use app\services\UtilityService;
                     </a>
                 </li>
             </ul>
-        </li>
+        </li>-->
 
         <li class="heading">
             <h3 class="uppercase">Danh mục</h3>
@@ -135,12 +135,12 @@ use app\services\UtilityService;
                 <span class="title">Theo ngành nghề</span>
             </a>
         </li>
-        <li class="nav-item  ">
+<!--        <li class="nav-item  ">
             <a href="<?= Yii::$app->homeUrl ?>thongke/tkphuong" class="nav-link nav-toggle">
                 <i class="icon-bar-chart"></i>
                 <span class="title">Theo phường</span>
             </a>
-        </li>
+        </li>-->
         <li class="heading">
             <h3 class="uppercase">Tài khoản</h3>
         </li>
