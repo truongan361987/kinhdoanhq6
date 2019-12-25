@@ -13,6 +13,7 @@ class PoiService {
     public static $ARRAY_POI = [
         'v_hokinhdoanh' => 'Hộ kinh doanh',
         'v_cuahang' => 'Cửa hàng',
+        'v_doanhnghiep' => 'Doanh nghiệp',
         'poi_ubnd' => 'Cơ quan nhà nước',
         'poi_coso_giaoduc' => 'Cơ sỏ giáo dục',
         'poi_coso_tongiao' => 'Cơ sở tôn giáo',

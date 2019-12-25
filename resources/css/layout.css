@@ -1466,8 +1466,8 @@ Theme Panel
   position: fixed;
   top: 0;
   bottom: 0;
-  width: 400px;
-  right: -400px;
+  width: 500px;
+  right: -500px;
   overflow: hidden;
     background: #21282e; }
   .page-quick-sidebar-open .page-quick-sidebar-wrapper {

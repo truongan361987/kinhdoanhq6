@@ -2,8 +2,11 @@
 
 namespace app\controllers;
 
-use app\services\HokinhdoanhService;
+use app\controllers\base\AbstractKinhdoanhq6Controller;
 use app\services\CuahangService;
+use app\services\DebugService;
+use app\services\DoanhnghiepService;
+use app\services\HokinhdoanhService;
 use app\services\PoiService;
 use app\services\SecurityService;
 use Yii;
@@ -15,7 +18,7 @@ use yii\db\Query;
  *
  * @author TriLVH
  */
-class UserController extends base\AbstractKinhdoanhq6Controller {
+class UserController extends AbstractKinhdoanhq6Controller {
 
     public function actionBando() {
         $this->layout = "@app/views/layouts/user/main_user";
@@ -72,6 +75,22 @@ class UserController extends base\AbstractKinhdoanhq6Controller {
         return $this->renderPartial("_item-cuahang", ["model" => $model]);
     }
 
+    public function actionDoanhnghiepGeojson() {
+        if (SecurityService::checkCurrentUserCanAccessGeojson()) {
+            $list_doanhnghiep = DoanhnghiepService::getListDoanhnghiepGeojson();
+            return json_encode($list_doanhnghiep);
+        }
+        return json_encode(['errors' => ['Thao tác không cho phép']]);
+    }
+
+    public function actionDoanhnghiepGet() {
+        $slug = Yii::$app->request->get('slug', null);
+        if (SecurityService::checkCurrentUserCanAccessList()) {
+            $model = DoanhnghiepService::getDoanhnghiep($slug);
+        }
+        return $this->renderPartial("_item-doanhnghiep", ["model" => $model]);
+    }
+
     public function actionHokinhdoanhIncircle() {
         $lat = Yii::$app->request->get('lat', null);
         $lng = Yii::$app->request->get('lng', null);
@@ -94,7 +113,7 @@ class UserController extends base\AbstractKinhdoanhq6Controller {
                 return $this->renderPartial('table-count-incircle', ['data' => $count, 'params' => ['lat' => $lat, 'lng' => $lng, 'radius' => $radius]]);
             }
         } catch (Exception $e) {
-            \app\services\DebugService::dumpdie($e);
+            DebugService::dumpdie($e);
         }
         return json_encode(['message' => 'not found']);
     }
@@ -113,14 +132,14 @@ class UserController extends base\AbstractKinhdoanhq6Controller {
                 $sql_geom = "st_transform(st_setsrid(geom, 4326), 32648)";
                 $sql_contains = "st_contains($sql_circle, $sql_geom)";
                 $models = (new Query())->select(['*, st_x(geom) as geo_x, st_y(geom) as geo_y, ST_Distance(st_transform(st_setsrid(st_makepoint(' . $lng . ',' . $lat . '), 4326), 32648),st_transform(st_setsrid(geom, 4326),32648))  as dist'])->from($poi)->where($sql_contains)->all();
-                //  \app\services\DebugService::dumpdie($models);
+                // \app\services\DebugService::dumpdie($models);
                 if (isset($json)) {
                     return json_encode(['data' => $models]);
                 }
                 return $this->renderPartial('poidetail-incircle', ['data' => $models, 'params' => ['lat' => $lat, 'lng' => $lng, 'radius' => $radius, 'poi' => $poi]]);
             }
         } catch (Exception $e) {
-            \app\services\DebugService::dumpdie($e);
+            DebugService::dumpdie($e);
         }
         return json_encode(['message' => 'not found']);
     }

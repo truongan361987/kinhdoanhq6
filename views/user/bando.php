@@ -4,7 +4,7 @@
     #map {
         width: 100%;
         height: 100%;
-        min-height: 650px;
+        min-height: 850px;
     }
 
     .height100 {
@@ -26,7 +26,7 @@
 
 </style>
 <div class="row ">
-    <div class="col-sm-12 no-padding">
+    <div class="col-lg-12 col-sm-12 col-xs-12">
         <div class="col-sm-12 no-padding">
             <div class="portlet light bordered">
                 <div class="portlet-body">
@@ -43,6 +43,7 @@
     var defined = {
         layer_hokindoanh: "Hộ kinh doanh",
         layer_cuahang: "Cửa hàng",
+        layer_doanhnghiep: "Doanh nghiệp",
     };
     var DATA = {
         HomeUrl: "../",
@@ -52,9 +53,9 @@
             defaultZoom: 11,
             defaultConfig: {maxZoom: 22},
             baseLayers: ["Bản đồ Google", "HCMGIS", "Ảnh vệ tinh", "MapBox"],
-            overLayers: ["RanhThua","Cơ quan nhà nước", "Cơ sở giáo dục", "Cơ sở y tế", "Cơ sở tôn giáo", "Chợ", "Di tích lịch sử", "Trụ sở công an"],
+            overLayers: ["RanhThua", "Cơ quan nhà nước", "Cơ sở giáo dục", "Cơ sở y tế", "Cơ sở tôn giáo", "Chợ", "Di tích lịch sử", "Trụ sở công an"],
             activeLayers: ["Bản đồ Google"],
-            initOthers: [initHokinhdoanhGeojsonLayer, initDrawControl, initCuahangGeojsonLayer, initFocusCircleLayer, initMapZoomEvent, initMeasureControl],
+            initOthers: [initHokinhdoanhGeojsonLayer, initDoanhnghiepGeojsonLayer, initDrawControl, initCuahangGeojsonLayer, initFocusCircleLayer, initMapZoomEvent, initMeasureControl],
             control: {
                 geocomplete: {
                     InputId: "#geocomplete",
@@ -236,17 +237,17 @@
                     var popupid = 'marker-popup-' + data.id;
 
                     leafletMarker.bindPopup('<div id="' + popupid + '"></div>');
-                    leafletMarker.on('mouseover', function (e) {
-                        var popupid = 'marker-popup-' + data.id;
-                        //   mapZoomAndPanTo(data.geo_y, data.geo_x);
-                        $.ajax({
-                            url: DATA.HomeUrl + 'user/cuahang-get/?slug=' + data.id,
-                            success: function (html) {
-                                $('#' + popupid).empty().append(html);
-                            }
-                        })
-                        this.openPopup();
-                    });
+//                    leafletMarker.on('mouseover', function (e) {
+//                        var popupid = 'marker-popup-' + data.id;
+//                        //   mapZoomAndPanTo(data.geo_y, data.geo_x);
+//                        $.ajax({
+//                            url: DATA.HomeUrl + 'user/cuahang-get/?slug=' + data.id,
+//                            success: function (html) {
+//                                $('#' + popupid).empty().append(html);
+//                            }
+//                        })
+//                        this.openPopup();
+//                    });
 //                    leafletMarker.on('mouseout', function (e) {
 //                        this.closePopup();
 //                    });
@@ -315,17 +316,17 @@
                 pruneCluster.PrepareLeafletMarker = function (leafletMarker, data) {
                     var popupid = 'marker-popup-' + data.id;
                     leafletMarker.bindPopup('<div id="' + popupid + '"></div>');
-                    leafletMarker.on('mouseover', function (e) {
-                        var popupid = 'marker-popup-' + data.id;
-                        //   mapZoomAndPanTo(data.geo_y, data.geo_x);
-                        $.ajax({
-                            url: DATA.HomeUrl + 'user/hokinhdoanh-get/?slug=' + data.id,
-                            success: function (html) {
-                                $('#' + popupid).empty().append(html);
-                            }
-                        })
-                        this.openPopup();
-                    });
+//                    leafletMarker.on('mouseover', function (e) {
+//                        var popupid = 'marker-popup-' + data.id;
+//                        //   mapZoomAndPanTo(data.geo_y, data.geo_x);
+//                        $.ajax({
+//                            url: DATA.HomeUrl + 'user/hokinhdoanh-get/?slug=' + data.id,
+//                            success: function (html) {
+//                                $('#' + popupid).empty().append(html);
+//                            }
+//                        })
+//                        this.openPopup();
+//                    });
 //                     leafletMarker.on('mouseout', function (e) {
 //                       this.closePopup();
 //                    });
@@ -401,7 +402,98 @@
                 mapZoomAndPanTo(y, x, 20);
         });
     }
+    ///DN
+    function initDoanhnghiepGeojsonLayer(config) {
 
+        $.ajax({
+            url: DATA.HomeUrl + 'user/doanhnghiep-geojson',
+            dataType: 'json',
+            success: function (data) {
+                var pruneCluster = new PruneClusterForLeaflet();
+                data.map(function (item) {
+                    var prunemarker = new PruneCluster.Marker(item.geo_y, item.geo_x);
+                    prunemarker.data = item;
+                    pruneCluster.RegisterMarker(prunemarker);
+                });
+                DATA.Refs.LeafletLayers[defined.layer_doanhnghiep] = pruneCluster;
+                DATA[config.mapId].Map.addLayer(pruneCluster);
+                DATA[config.mapId].MapControl.layercontrol.addOverlay(pruneCluster, defined.layer_doanhnghiep);
+                pruneCluster.PrepareLeafletMarker = function (leafletMarker, data) {
+
+                    var popupid = 'marker-popup-' + data.id;
+
+                    leafletMarker.bindPopup('<div id="' + popupid + '"></div>');
+
+//                    leafletMarker.on('mouseover', function (e) {
+//                        var popupid = 'marker-popup-' + data.id;
+//                        //   mapZoomAndPanTo(data.geo_y, data.geo_x);
+//                        $.ajax({
+//                            url: DATA.HomeUrl + 'user/doanhnghiep-get/?slug=' + data.id,
+//                            success: function (html) {
+//                                $('#' + popupid).empty().append(html);
+//                            }
+//                        })
+//                        this.openPopup();
+//                    });
+//                    leafletMarker.on('mouseout', function (e) {
+//                        this.closePopup();
+//                    });
+                    leafletMarker.on('click', function () {
+                        var popupid = 'marker-popup-' + data.id;
+                        //  mapZoomAndPanTo(data.geo_y, data.geo_x);
+                        $.ajax({
+                            url: DATA.HomeUrl + 'user/doanhnghiep-get/?slug=' + data.id,
+                            success: function (html) {
+                                $('#' + popupid).empty().append(html);
+                            }
+                        })
+                    });
+                    var divIcon = L.divIcon({
+                        iconSize: [40, 48],
+                        iconAnchor: [20, 48],
+                        popupAnchor: [0, -48],
+                        html: '<div style="background: white;width: 40px;height: 40px;border-radius: 100%;font-size: 26px;"><img src="' + DATA.HomeUrl + '/resources/img/company.png"></div>'
+                    });
+                    leafletMarker.setIcon(divIcon);
+                    DATA.Refs.Markers[data.id] = leafletMarker;
+                }
+            }
+        });
+    }
+    function initListDoanhnghiep() {
+        loadAjaxToDivListDoanhnghiep(DATA.HomeUrl + '/user/list-doanhnghiep');
+        initSearchDn();
+    }
+
+    function initPagAjaxDivListDoanhnghiep() {
+        $('.pagination li a').on('click', function (e) {
+            e.preventDefault();
+            var _this = $(this);
+            var url = _this.attr('href');
+            loadAjaxToDivListDoanhnghiep(url);
+            return false;
+        });
+    }
+    function loadAjaxToDivListDoanhnghiep(url) {
+        var div = $('#list_doanhnghiep');
+        $.ajax({
+            url: url,
+            success: function (html) {
+                div.empty().append(html);
+                initPagAjaxDivListDoanhnghiep();
+                initDnClickEvent();
+            }
+        });
+    }
+    function initDnClickEvent() {
+        $('.dn-item').on('click', function () {
+            var _this = $(this);
+            var x = _this.attr('data-point-x');
+            var y = _this.attr('data-point-y');
+            if (typeof (x) != 'undefined')
+                mapZoomAndPanTo(y, x, 20);
+        });
+    }
     function initDrawControl(config) {
         DATA.MapLayer.drawlayer = new L.FeatureGroup();
         DATA[config.mapId].Map.addLayer(DATA.MapLayer.drawlayer);
@@ -412,9 +504,9 @@
                 polyline: false,
                 rectangle: false
             },
-            edit: {
-                featureGroup: DATA.MapLayer.drawlayer
-            }
+//            edit: {
+//                featureGroup: DATA.MapLayer.drawlayer
+//            }
         });
         DATA[config.mapId].MapControl.drawcontrol.addTo(DATA[config.mapId].Map);
         DATA[config.mapId].Map.on('draw:created', function (e) {
@@ -424,22 +516,23 @@
             if (type === 'circle') {
                 var theCenterPt = layer.getLatLng();
                 var center = [theCenterPt.lng, theCenterPt.lat];
-                layer.bindPopup('Bán kính: ' + Math.round(layer.getRadius()) + ' m <br> Tâm điểm:' + center);
+                layer.bindPopup('Bán kính: ' + Math.round(layer.getRadius()) + ' (m)');
             }
             DATA.MapLayer.drawlayer.addLayer(e.layer);
             callHokinhdoanhInCircle(e.layer._latlng.lat, e.layer._latlng.lng, e.layer._mRadius);
         });
-        DATA[config.mapId].Map.on('draw:edited', function (e) {
-            var layers = e.layers;
-            layers.eachLayer(function (layer) {
-                if (layer instanceof L.Circle) {
-                    var theCenterPt = layer.getLatLng();
-                    var center = [theCenterPt.lng, theCenterPt.lat];
-                    layer.bindPopup('Bán kính: ' + Math.round(layer.getRadius()) + ' m <br> Tâm điểm:' + center);
-                    callHokinhdoanhInCircle(layer._latlng.lat, layer._latlng.lng, layer._mRadius);
-                }
-            });
-        });
+//        DATA[config.mapId].Map.on('draw:edited', function (e) {
+//            var layers = e.layers;
+//            layers.eachLayer(function (layer) {
+//                if (layer instanceof L.Circle) {
+//                    var theCenterPt = layer.getLatLng();
+//                    var center = [theCenterPt.lng, theCenterPt.lat];
+//
+//                    layer.bindPopup('Bán kính: ' + Math.round(layer.getRadius()) + ' m <br> Tâm điểm:' + center);
+//                    callHokinhdoanhInCircle(layer._latlng.lat, layer._latlng.lng, layer._mRadius);
+//                }
+//            });
+//        });
     }
     function initMeasureControl(config) {
         var measureControl = new L.Control.Measure({

@@ -12,7 +12,7 @@
                     <div class="ten"><a href='<?= Yii::$app->homeUrl ?>cuahang/view?id=<?= $model["id_cuahang"] ?>'
                                         target='_blank'><?= (($model['ten_cuahang'] == NULL) ? '(Chưa có)' : $model['ten_cuahang']) ?></a>
                                         <?php if ($model["geo_x"] != null): ?>
-                            <span style='color: "blue"'><i class="fa fa-map-marker"></i></span>
+                            <span style='color: red'><i class="fa fa-map-marker"></i></span>
                         <?php else: ?>
                             <span style=''><i style='color: gray' class="fa fa-map-marker"></i></span>
                         <?php endif; ?>
